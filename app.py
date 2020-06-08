@@ -12,6 +12,10 @@ from iota import Transaction
 from iota import TryteString
 from iota.crypto.kerl import Kerl
 
+from redis import Redis
+import rq
+queue = rq.Queue('default', connection=Redis.from_url('redis://'))
+
 # Import hashlib
 import hashlib
 
@@ -190,7 +194,14 @@ def register_new_transaction():
         udata = {'Barcode ID' : barcode_ID, 'Transaction Type' : transaction_type, 'Actor Name' : actor_name, 'Transaction Hash' : transaction_hash}
         msg = json.dumps(udata)
         
-        Thread(target=publish_transaction, args=(app, addr, msg)).start()
+        # add job to redis que
+        job = queue.enqueue('pubtrans.publish_transaction', addr, msg)
+
+        jid = job.get_id()
+
+        print(jid)
+
+        #Thread(target=publish_transaction, args=(app, addr, msg)).start()
 
         flash('New transaction publised to address: ' + str(addr))
         #retval = send_test()
