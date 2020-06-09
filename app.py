@@ -204,7 +204,7 @@ def register_new_transaction():
         job_id = job.get_id()
 
         # Print the Redis job ID to terminal
-        print(job_jid)
+        print(job_id)
 
         # Show confirmation that new transaction was published
         flash('New transaction publised to address: ' + str(addr))
