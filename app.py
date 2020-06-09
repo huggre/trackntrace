@@ -172,9 +172,14 @@ def register_new_transaction():
     form.actor_name.choices = [('1', 'Hotel IOTA Purchasing Dep.'), ('2', 'Bob the fisherman'), ('3', 'Trucks R Us'), ('4', 'SeaTrans Inc.'), ('5', 'WeDeliver Inc.'), ('6', 'Hotel IOTA Warehouse')]
     
     if form.validate_on_submit():
+        
+
+        #value = dict(form.choice.choices).get(form.choice.data)
+
+        actor_name = dict(form.actor_name.choices).get(form.actor_name.data)
 
         # Get values from form
-        actor_name = form.actor_name.data
+        #actor_name = form.actor_name.data
         actor_key = form.actor_key.data
         transaction_type = form.transaction_type.data
         barcode_ID = form.barcode.data
