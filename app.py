@@ -1,10 +1,4 @@
 
-#import logging
-#logging.basicConfig(level=logging.DEBUG)
-#import sys
-
-from threading import Thread
-
 # Import the PyOTA library
 import iota
 from iota import Address
@@ -12,6 +6,7 @@ from iota import Transaction
 from iota import TryteString
 from iota.crypto.kerl import Kerl
 
+# Import redis and RQ
 from redis import Redis
 import rq
 queue = rq.Queue('default', connection=Redis.from_url('redis://'))
@@ -26,7 +21,6 @@ import datetime
 # Import json
 import json
 
-
 from random import randint
 from time import strftime
 from flask import Flask, render_template, flash, request
@@ -37,8 +31,10 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, FloatField, PasswordField, BooleanField, SubmitField, SelectField, RadioField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 
+# Import Flask-WTF
 from flask_wtf import FlaskForm
 
+# Import Flask Bootstrap
 from flask_bootstrap import Bootstrap
 
 DEBUG = True
@@ -46,13 +42,14 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 app.config['SECRET_KEY'] = 'SjdnUends821Jsdlkvxh391ksdODnejdDw'
 
+# Create bootstrap object
 bootstrap = Bootstrap(app)
 
 # Define full node to be used when uploading/downloading transaction records to/from the tangle
-NodeURL = "https://nodes.thetangle.org:443"
+# NodeURL = "https://nodes.thetangle.org:443"
 
 # Create IOTA object
-api=iota.Iota(NodeURL)
+# api=iota.Iota(NodeURL)
 
 class ReusableForm(FlaskForm):
     #actor_name = SelectField('Actor Name', choices=[('Hotel IOTA', 'Hotel IOTA'), ('Ben the Fisherman', 'Ben the Fisherman')])
@@ -172,22 +169,28 @@ def register_new_transaction():
     # Add actor names to SelectField
     #form.actor_name.choices = ['Hotel IOTA Purchasing Dep.', 'Bob the fisherman', 'Trucks R Us',  'SeaTrans Inc.', 'WeDeliver Inc.', 'Hotel IOTA Warehouse']
 
-    form.actor_name.choices = [('c', 'Hotel IOTA Purchasing Dep.'), ('c', 'Bob the fisherman'), ('c', 'Trucks R Us'), ('c', 'SeaTrans Inc.'), ('c', 'WeDeliver Inc.'), ('c', 'Hotel IOTA Warehouse')]
+    form.actor_name.choices = [('1', 'Hotel IOTA Purchasing Dep.'), ('2', 'Bob the fisherman'), ('3', 'Trucks R Us'), ('4', 'SeaTrans Inc.'), ('5', 'WeDeliver Inc.'), ('6', 'Hotel IOTA Warehouse')]
     
     if form.validate_on_submit():
-        #tag = tbl_tags()
-        #print('HEI')
-        #app.logger.info('Processing default request')
-        #retval = publish_transaction('HEI', 'HOPP', 'XXX', 'JHGJ')
-        #retval = pub()
 
-        actor_name = 'ACTOR NAME'
-        actor_key = 'MYACTORKEY'
-        transaction_type = "Inbound"
-        barcode_ID = '1234567898765'
+        # Get values from form
+        actor_name = form.actor_name.data
+        actor_key = form.actor_key.data
+        transaction_type = form.transaction_type.data
+        barcode_ID = form.barcode.data
 
+        #actor_name = 'ACTOR NAME'
+        #actor_key = 'MYACTORKEY'
+        #transaction_type = "Inbound"
+        #barcode_ID = '1234567898765'
+
+        # Create IOTA address from 13 digit barcode
         addr = CreateAddress(barcode_ID)
-        hash_string = barcode_ID + actor_key
+        
+        # Build the string to be hashed
+        hash_string = barcode_ID + actor_key + transaction_type
+        
+        # Hash the string
         transaction_hash = encrypt_string(hash_string)
 
         # Create upload json
@@ -197,17 +200,15 @@ def register_new_transaction():
         # add job to redis que
         job = queue.enqueue('pubtrans.publish_transaction', addr, msg)
 
-        jid = job.get_id()
+        # Get the Redis job ID
+        job_id = job.get_id()
 
-        print(jid)
+        # Print the Redis job ID to terminal
+        print(job_jid)
 
-        #Thread(target=publish_transaction, args=(app, addr, msg)).start()
-
+        # Show confirmation that new transaction was published
         flash('New transaction publised to address: ' + str(addr))
-        #retval = send_test()
-        #if retval == True:
-            #flash('New transaction created sucessfully!!')
-            #return redirect(url_for('tags'))
+
     return render_template('register_new_transaction.html', title='Register New Transaction', form=form)
 
 # Display transaction history
