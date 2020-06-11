@@ -248,21 +248,21 @@ def display_transaction_history():
 
         #loop.run_until_complete(get_transaction_data_from_tangle(barcode_ID))
 
-        #return redirect(url_for('display_transaction_history_result'))
-        return display_transaction_history_result(msg_data)
+        return redirect(url_for('display_transaction_history_result'))
+        #return display_transaction_history_result(msg_data)
     return render_template('display_transaction_history.html', title='Display transaction history', form=form)
 
 
 # Display transaction history result
 @app.route('/display_transaction_history_result')
-def display_transaction_history_result(msg_data):
+def display_transaction_history_result():
 
     items = [dict(name='Name1', description='Description1'),
          dict(name='Name2', description='Description2'),
          dict(name='Name3', description='Description3')]
 
     # Populate the table
-    table = ItemTable(msg_data)
+    table = ItemTable(items)
 
     #return render_template('display_transaction_history_result.html', title='Transaction history', items=items)
     return render_template('display_transaction_history_result.html', title='Transaction history', table=table)

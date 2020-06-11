@@ -61,7 +61,7 @@ def get_transactions(barcode_ID):
     myhashes = result['hashes']
 
     # Print wait message
-    print("Please wait while retrieving cleaning records from the tangle...")
+    print("Please wait while retrieving transactions from the tangle...")
 
 
     msg_data = []
