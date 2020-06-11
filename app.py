@@ -257,8 +257,12 @@ def display_transaction_history():
 @app.route('/display_transaction_history_result')
 def display_transaction_history_result(msg_data):
 
+    items = [dict(name='Name1', description='Description1'),
+         dict(name='Name2', description='Description2'),
+         dict(name='Name3', description='Description3')]
+
     # Populate the table
-    table = ItemTable(msg_data)
+    table = ItemTable(items)
 
     #return render_template('display_transaction_history_result.html', title='Transaction history', items=items)
     return render_template('display_transaction_history_result.html', title='Transaction history', table=table)
