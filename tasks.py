@@ -91,10 +91,10 @@ def get_transactions(barcode_ID):
         json_data = json.loads(txn_data)
         
         # Check if json data has the expected json tag's
-        if all(key in json.dumps(json_data) for key in ["tagID","hotel","room_number"]):
+        #if all(key in json.dumps(json_data) for key in ["tagID","hotel","room_number"]):
             # Add table row with json values
             # x.add_row([json_data['tagID'], json_data['hotel'], json_data['room_number'], clean_time])
-            print('hei')
+        #    print('hei')
 
     # Sort table by cleaned datetime
     # x.sortby = "last_cleaned"
