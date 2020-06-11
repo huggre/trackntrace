@@ -257,10 +257,6 @@ def display_transaction_history():
 @app.route('/display_transaction_history_result')
 def display_transaction_history_result(msg_data):
 
-    items = [Item('Name1', 'Description1'),
-            Item('Name2', 'Description2'),
-            Item('Name3', 'Description3')]
-
     # Populate the table
     table = ItemTable(msg_data)
 
