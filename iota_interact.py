@@ -92,10 +92,12 @@ def get_transactions(barcode_ID):
        
         # Convert to json
         json_data = json.loads(txn_data)
+
+#        print(json_data)
        
         # Check if json data has the expected json tag's
         if all(key in json.dumps(json_data) for key in ["Barcode ID","Transaction Type","Actor Name"]):
             # Append meassage fragment data to dict
-            msg_data.append(txn_data)
+            msg_data.append(json_data)
 
     return msg_data

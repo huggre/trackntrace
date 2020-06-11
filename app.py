@@ -262,7 +262,7 @@ def display_transaction_history_result(msg_data):
          dict(name='Name3', description='Description3')]
 
     # Populate the table
-    table = ItemTable(items)
+    table = ItemTable(msg_data)
 
     #return render_template('display_transaction_history_result.html', title='Transaction history', items=items)
     return render_template('display_transaction_history_result.html', title='Transaction history', table=table)
