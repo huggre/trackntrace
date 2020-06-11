@@ -64,7 +64,7 @@ def get_transactions(barcode_ID):
     print("Please wait while retrieving transactions from the tangle...")
 
 
-    msg_data = []
+    msg_data = {}
 
     # Loop trough all transaction hashes
     for txn_hash in myhashes:
@@ -93,11 +93,12 @@ def get_transactions(barcode_ID):
         # Convert to json
         json_data = json.loads(txn_data)
 
-#        print(json_data)
+        #print(type(json_data))
        
         # Check if json data has the expected json tag's
         if all(key in json.dumps(json_data) for key in ["Barcode ID","Transaction Type","Actor Name"]):
             # Append meassage fragment data to dict
-            msg_data.append(json_data)
+            msg_data.update(json_data)
 
+    #print(type(msg_data))
     return msg_data
