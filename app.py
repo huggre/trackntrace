@@ -1,16 +1,16 @@
 
-from threading import Thread
-from tasks import get_transactions
-from tasks import threaded_task
 
-import asyncio
+# Import Iota interact functions
+from iota_interact import send_transaction
+from iota_interact import get_transactions
+from iota_interact import GenerateAddressFromBarcode
 
 # Import the PyOTA library
-import iota
-from iota import Address
-from iota import Transaction
-from iota import TryteString
-from iota.crypto.kerl import Kerl
+#import iota
+#from iota import Address
+#from iota import Transaction
+#from iota import TryteString
+#from iota.crypto.kerl import Kerl
 
 # Import redis and RQ
 from redis import Redis
@@ -50,7 +50,7 @@ from flask_bootstrap import Bootstrap
 NodeURL = "https://nodes.thetangle.org:443"
 
 # Create IOTA object
-api=iota.Iota(NodeURL)
+#api=iota.Iota(NodeURL)
 
 # Declare your table
 class ItemTable(Table):
@@ -65,7 +65,7 @@ app.config['SECRET_KEY'] = 'SjdnUends821Jsdlkvxh391ksdODnejdDw'
 # Create bootstrap object
 bootstrap = Bootstrap(app)
 
-loop2 = asyncio.get_event_loop()
+#loop2 = asyncio.get_event_loop()
 
 class ReusableForm(FlaskForm):
     #actor_name = SelectField('Actor Name', choices=[('Hotel IOTA', 'Hotel IOTA'), ('Ben the Fisherman', 'Ben the Fisherman')])
@@ -78,7 +78,7 @@ class ReusableForm(FlaskForm):
 # Form for Register new transaction
 class RegisterTransactionForm(FlaskForm):
     actor_name = SelectField('Actor Name', coerce=str)
-    actor_key = StringField('Actor Key', validators=[DataRequired()])
+    actor_seed = StringField('Actor Seed', validators=[DataRequired()])
     transaction_type = RadioField('Transaction Type', choices=[('1','Inbound'),('2','Outbound')], default=1, coerce=str)
     barcode = StringField('Barcode', validators=[DataRequired()])
     submit = SubmitField('Submit')
@@ -185,31 +185,25 @@ def register_transaction():
         
         # Get values from form
         actor_name = dict(form.actor_name.choices).get(form.actor_name.data)
-        actor_key = form.actor_key.data
+        actor_seed = form.actor_seed.data
         transaction_type = dict(form.transaction_type.choices).get(form.transaction_type.data)
         barcode_ID = form.barcode.data
 
         # Create IOTA address from 13 digit barcode
-        addr = CreateAddress(barcode_ID)
+        addr = GenerateAddressFromBarcode(barcode_ID)
         
-        # Build the string to be hashed
-        hash_string = barcode_ID + actor_key + transaction_type
-        
-        # Hash the string
-        transaction_hash = encrypt_string(hash_string)
-
         # Create upload json
-        udata = {'Barcode ID' : barcode_ID, 'Transaction Type' : transaction_type, 'Actor Name' : actor_name, 'Transaction Hash' : transaction_hash}
+        udata = {'Barcode ID' : barcode_ID, 'Transaction Type' : transaction_type, 'Actor Name' : actor_name}
         msg = json.dumps(udata)
         
         # add job to redis que
-        job = queue.enqueue('pubtrans.publish_transaction', addr, msg)
+        job = queue.enqueue('send_transaction', actor_seed, addr, msg)
 
         # Get the redis job ID
         job_id = job.get_id()
 
         # Print the redis job ID to terminal
-        print(job_id)
+        print("New redis job added to que" + job_id)
 
         # Show confirmation that new transaction was published
         flash('New transaction registered to address: ' + str(addr))
@@ -234,7 +228,7 @@ def display_transaction_history():
         #loop = asyncio.new_event_loop()
         # loop2.run_until_complete(get_transactions(barcode_ID))
 
-        get_transactions(barcode_ID)
+        msg_data = get_transactions(barcode_ID)
 
         #loop = asyncio.get_event_loop()
         #loop.run_until_complete(get_transactions(barcode_ID))
@@ -245,7 +239,7 @@ def display_transaction_history():
         #t.join()
 
         #print('Done')
-        duration=10
+        #duration=10
         #thread = Thread(target=threaded_task, args=(duration,))
         #thread.daemon = True
         #thread.start()
@@ -254,20 +248,21 @@ def display_transaction_history():
 
         #loop.run_until_complete(get_transaction_data_from_tangle(barcode_ID))
 
-        return redirect(url_for('display_transaction_history_result'))
+        #return redirect(url_for('display_transaction_history_result'))
+        return display_transaction_history_result(msg_data)
     return render_template('display_transaction_history.html', title='Display transaction history', form=form)
 
 
 # Display transaction history result
 @app.route('/display_transaction_history_result')
-def display_transaction_history_result():
+def display_transaction_history_result(msg_data):
 
     items = [dict(name='Name1', description='Description1'),
          dict(name='Name2', description='Description2'),
          dict(name='Name3', description='Description3')]
 
     # Populate the table
-    table = ItemTable(items)
+    table = ItemTable(msg_data)
 
     #return render_template('display_transaction_history_result.html', title='Transaction history', items=items)
     return render_template('display_transaction_history_result.html', title='Transaction history', table=table)

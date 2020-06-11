@@ -1,12 +1,9 @@
-import time
-
 # Import the PyOTA library
 import iota
 from iota import Address
 from iota import Transaction
 from iota import TryteString
 from iota.crypto.kerl import Kerl
-
 
 # Import datetime libary
 import time
@@ -18,11 +15,9 @@ import json
 # Define full node to be used when uploading/downloading transaction records to/from the tangle
 NodeURL = "https://nodes.thetangle.org:443"
 
-# Create IOTA object
-api=iota.Iota(NodeURL)
 
-# Function for generating IOTA addresse based on a given barcode ID
-def CreateAddress(barcode_ID):
+# Function for generating IOTA address from a given barcode ID
+def GenerateAddressFromBarcode(barcode_ID):
     barcode_tryte = TryteString.from_unicode(barcode_ID)
     astrits = TryteString(str(barcode_tryte).encode()).as_trits()
     checksum_trits = []
@@ -33,35 +28,43 @@ def CreateAddress(barcode_ID):
     new_address = Address(result)
     return(new_address.with_valid_checksum())
 
-def example(seconds):
-    print('Starting task')
-    for i in range(seconds):
-        print(i)
-        time.sleep(1)
-    print('Task completed')
+def send_transaction(seed, addr, msg):
 
-def threaded_task(duration):
-    for i in range(duration):
-        print("Working... {}/{}".format(i + 1, duration))
-        time.sleep(1)
+    # Create IOTA object
+    api=iota.Iota(NodeURL, seed=seed)
+
+    # Define new IOTA transaction
+    pt = iota.ProposedTransaction(address = iota.Address(addr), message = iota.TryteString.from_unicode(msg), tag = iota.Tag(b'HOTELIOTA'), value=0)
+
+    # Print waiting message
+    print("\nSending transaction...")
+
+    FinalBundle = api.send_transfer(depth=3, transfers=[pt], min_weight_magnitude=14)['bundle']
+
+    # Print confirmation message 
+    print("\nTransaction sendt...")
+
+
 
 def get_transactions(barcode_ID):
 
-    #barcode_ID = '1234567898765'
+    # Create IOTA object
+    api=iota.Iota(NodeURL)
 
-    # Get IOTA address from 13 digit barcode
-    #address = CreateAddress(barcode_ID)
-
-    address = [Address(b'TAAUUAKUZHKBWTCGKXTJGWHXEYJONN9MZZQUQLSZCLHFAWUWKHZCICTHISXBBAKGFQENMWMBOVWJTCMEWXKQDTJCV9')]
+    # Generate IOTA address from barcode
+    addr = GenerateAddressFromBarcode(barcode_ID)
 
     # Find all transacions for selected IOTA address
-    result = api.find_transactions(addresses=address)
+    result = api.find_transactions(addresses=[addr,])
         
     # Create a list of transaction hashes
     myhashes = result['hashes']
 
     # Print wait message
     print("Please wait while retrieving cleaning records from the tangle...")
+
+
+    msg_data = []
 
     # Loop trough all transaction hashes
     for txn_hash in myhashes:
@@ -86,20 +89,13 @@ def get_transactions(barcode_ID):
 
         # Get transaction message as string
         txn_data = str(txn.signature_message_fragment.decode())
-        
+       
         # Convert to json
         json_data = json.loads(txn_data)
-
-        # print(json_data)
-        
+       
         # Check if json data has the expected json tag's
-        #if all(key in json.dumps(json_data) for key in ["tagID","hotel","room_number"]):
-            # Add table row with json values
-            # x.add_row([json_data['tagID'], json_data['hotel'], json_data['room_number'], clean_time])
-        #    print('hei')
+        if all(key in json.dumps(json_data) for key in ["Barcode ID","Transaction Type","Actor Name"]):
+            # Append meassage fragment data to dict
+            msg_data.append(txn_data)
 
-    # Sort table by cleaned datetime
-    # x.sortby = "last_cleaned"
-
-    # Return Dict
-    #print(x)
+    return msg_data
