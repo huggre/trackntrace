@@ -1,24 +1,7 @@
-
-
-# Import Iota interact functions
+# Import some Iota interact functions
 from iota_interact import send_transaction
 from iota_interact import get_transactions
 from iota_interact import GenerateAddressFromBarcode
-
-# Import the PyOTA library
-#import iota
-#from iota import Address
-#from iota import Transaction
-#from iota import TryteString
-#from iota.crypto.kerl import Kerl
-
-# Import redis and RQ
-#from redis import Redis
-#import rq
-#queue = rq.Queue('default', connection=Redis.from_url('redis://'))
-
-# Import hashlib
-#import hashlib
 
 # Import datetime libary
 import time
@@ -44,10 +27,7 @@ from flask_wtf import FlaskForm
 from flask_bootstrap import Bootstrap
 
 # Define full node to be used when uploading/downloading transaction records to/from the tangle
-NodeURL = "https://nodes.thetangle.org:443"
-
-# Create IOTA object
-#api=iota.Iota(NodeURL)
+# NodeURL = "https://nodes.thetangle.org:443"
 
 DEBUG = True
 app = Flask(__name__)
@@ -56,8 +36,6 @@ app.config['SECRET_KEY'] = 'SjdnUends821Jsdlkvxh391ksdODnejdDw'
 
 # Create bootstrap object
 bootstrap = Bootstrap(app)
-
-#loop2 = asyncio.get_event_loop()
 
 class ReusableForm(FlaskForm):
     #actor_name = SelectField('Actor Name', choices=[('Hotel IOTA', 'Hotel IOTA'), ('Ben the Fisherman', 'Ben the Fisherman')])
@@ -89,38 +67,6 @@ def write_to_disk(name, surname, email):
     timestamp = get_time()
     data.write('DateStamp={}, Name={}, Surname={}, Email={} \n'.format(timestamp, name, surname, email))
     data.close()
-
-# Function for generating IOTA addresse based on a given barcode ID
-def CreateAddress(barcode_ID):
-    barcode_tryte = TryteString.from_unicode(barcode_ID)
-    astrits = TryteString(str(barcode_tryte).encode()).as_trits()
-    checksum_trits = []
-    sponge = Kerl()
-    sponge.absorb(astrits)
-    sponge.squeeze(checksum_trits)
-    result = TryteString.from_trits(checksum_trits) 
-    new_address = Address(result)
-    return(new_address.with_valid_checksum())
-
-# Function for hashing the transaction string
-def encrypt_string(hash_string):
-    sha_signature = hashlib.sha256(hash_string.encode()).hexdigest()
-    return sha_signature
-
-# Function for publising a new transaction to the tangle
-def publish_transaction(app, addr, msg):
-    with app.app_context():
-        # Define new IOTA transaction
-        pt = iota.ProposedTransaction(address = iota.Address(addr), message = iota.TryteString.from_unicode(msg), tag = iota.Tag(b'HOTELIOTA'), value=0)
-
-        # Print waiting message
-        print("\nSending transaction...")
-
-        FinalBundle = api.send_transfer(depth=3, transfers=[pt], min_weight_magnitude=14)['bundle']
-
-        # Print confirmation message 
-        print("\nTransaction sendt...")
-
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
@@ -191,21 +137,10 @@ def register_transaction():
         udata = {'timestamp' : timestamp, 'actor_name' : actor_name, 'transaction_type' : transaction_type}
         msg = json.dumps(udata)
         
-        # add job to redis que
-        #job = queue.enqueue('send_transaction', actor_seed, addr, msg)
-
-        flash('Sending transaction, please wait...')
-
-        # Send transaction to the tangle
+        # Send transaction to the IOTA tangle
         send_transaction(actor_seed, addr, msg)
 
-        # Get the redis job ID
-        #job_id = job.get_id()
-
-        # Print the redis job ID to terminal
-        #print("New redis job added to que: " + job_id)
-
-        # Show confirmation that new transaction was published
+        # Show confirmation that new transaction was sendt
         flash('New transaction registered to address: ' + str(addr))
 
     return render_template('register_transaction.html', title='Register transaction', form=form)
@@ -221,46 +156,20 @@ def display_transaction_history():
         # Get barcode ID from form
         barcode_ID = form.barcode.data
         
-        # Get transaction data from IOTA tangle
-        #get_transaction_data_from_tangle(barcode_ID)
-
-        # loop = asyncio.get_event_loop()
-        #loop = asyncio.new_event_loop()
-        # loop2.run_until_complete(get_transactions(barcode_ID))
-
+        # Get transaction data from the IOTA tangle
         transactions = get_transactions(barcode_ID)
 
-        #msg_data = 'test'
+        # Show transaction history in new page
+        return display_transaction_history_result(barcode_ID, transactions)
 
-        #loop = asyncio.get_event_loop()
-        #loop.run_until_complete(get_transactions(barcode_ID))
-
-
-        #t = AppContextThread(target=get_transaction_data_from_tangle)
-        #t.start()
-        #t.join()
-
-        #print('Done')
-        #duration=10
-        #thread = Thread(target=threaded_task, args=(duration,))
-        #thread.daemon = True
-        #thread.start()
-
-        #threaded_task(duration)
-
-        #loop.run_until_complete(get_transaction_data_from_tangle(barcode_ID))
-
-        #return redirect(url_for('display_transaction_history_result'))
-        return display_transaction_history_result(transactions)
     return render_template('display_transaction_history.html', title='Display transaction history', form=form)
 
 
 # Display transaction history result
 @app.route('/display_transaction_history_result')
-def display_transaction_history_result(transactions):
+def display_transaction_history_result(barcode_ID, transactions):
 
-    #return render_template('display_transaction_history_result.html', title='Transaction history', items=items)
-    return render_template('test.html', title='Transaction history', transactions=transactions)
+    return render_template('test.html', title='Transaction history', barcode_ID=barcode_ID, transactions=transactions)
 
 
 if __name__ == "__main__":
