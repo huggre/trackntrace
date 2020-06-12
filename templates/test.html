@@ -12,14 +12,18 @@
 		<table class="table table-striped" id="assets">
 			<thead>
 			<tr>
-				<th class="col-md-1">ID</th>
-				</tr>
+				<th class="col-md-2">Timestamp</th>
+				<th class="col-md-2">Actor Name</th>
+				<th class="col-md-2">Transaction Type</th>
+            </tr>
 			</thead>
 			<tbody>
 			{% for transaction in transactions %}
 			<tr>
 				<td>{{ transaction.timestamp }}</td>
-			</tr>
+				<td>{{ transaction.actor_name }}</td>
+				<td>{{ transaction.transaction_type }}</td>
+            </tr>
 			{% endfor %}
 			</tbody>
 		</table>
