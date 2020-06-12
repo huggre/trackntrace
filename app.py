@@ -13,12 +13,12 @@ from iota_interact import GenerateAddressFromBarcode
 #from iota.crypto.kerl import Kerl
 
 # Import redis and RQ
-from redis import Redis
-import rq
-queue = rq.Queue('default', connection=Redis.from_url('redis://'))
+#from redis import Redis
+#import rq
+#queue = rq.Queue('default', connection=Redis.from_url('redis://'))
 
 # Import hashlib
-import hashlib
+#import hashlib
 
 # Import datetime libary
 import time
@@ -193,6 +193,8 @@ def register_transaction():
         
         # add job to redis que
         #job = queue.enqueue('send_transaction', actor_seed, addr, msg)
+
+        flash('Sending transaction, please wait...')
 
         # Send transaction to the tangle
         send_transaction(actor_seed, addr, msg)
