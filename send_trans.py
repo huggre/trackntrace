@@ -18,4 +18,4 @@ msg = json.dumps(udata)
 
 send_transaction(seed, addr, msg)
 
-print('Done')
+print('Transactions sendt to: ' + addr)
