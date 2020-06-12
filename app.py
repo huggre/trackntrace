@@ -193,7 +193,7 @@ def register_transaction():
         addr = GenerateAddressFromBarcode(barcode_ID)
         
         # Create upload json
-        udata = {'Barcode ID' : barcode_ID, 'Transaction Type' : transaction_type, 'Actor Name' : actor_name}
+        udata = {'barcode_ID' : barcode_ID, 'transaction_type' : transaction_type, 'actor_name' : actor_name}
         msg = json.dumps(udata)
         
         # add job to redis que
