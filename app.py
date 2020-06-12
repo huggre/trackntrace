@@ -228,7 +228,9 @@ def display_transaction_history():
         #loop = asyncio.new_event_loop()
         # loop2.run_until_complete(get_transactions(barcode_ID))
 
-        msg_data = get_transactions(barcode_ID)
+        transactions = get_transactions(barcode_ID)
+
+        #msg_data = 'test'
 
         #loop = asyncio.get_event_loop()
         #loop.run_until_complete(get_transactions(barcode_ID))
@@ -249,23 +251,29 @@ def display_transaction_history():
         #loop.run_until_complete(get_transaction_data_from_tangle(barcode_ID))
 
         #return redirect(url_for('display_transaction_history_result'))
-        return display_transaction_history_result(msg_data)
+        return display_transaction_history_result(transactions)
     return render_template('display_transaction_history.html', title='Display transaction history', form=form)
 
 
+# Get some objects
+class Item(object):
+    def __init__(self, name, description):
+        self.name = name
+        self.description = description
+
 # Display transaction history result
 @app.route('/display_transaction_history_result')
-def display_transaction_history_result(msg_data):
+def display_transaction_history_result(transactions):
 
-    items = [dict(name='Name1', description='Description1'),
-         dict(name='Name2', description='Description2'),
-         dict(name='Name3', description='Description3')]
+    items = [Item('Name1', 'Description1'),
+            Item('Name2', 'Description2'),
+            Item('Name3', 'Description3')]
 
     # Populate the table
-    table = ItemTable(items)
+    #table = ItemTable(items)
 
     #return render_template('display_transaction_history_result.html', title='Transaction history', items=items)
-    return render_template('display_transaction_history_result.html', title='Transaction history', table=table)
+    return render_template('test.html', title='Transaction history', transactions=transactions)
 
 
 if __name__ == "__main__":

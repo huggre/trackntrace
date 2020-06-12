@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+	<div class="row">
+		<div class="col-md-10">
+		<table style="width:100%">
+			<tr>
+				<td><h1>My assets</h1></td>
+				<td>New asset</td>
+			</tr>
+		</table>
+		<table class="table table-striped" id="assets">
+			<thead>
+			<tr>
+				<th class="col-md-1">ID</th>
+				</tr>
+			</thead>
+			<tbody>
+			{% for transaction in transactions %}
+			<tr>
+				<td>{{ transaction.barcode ID }}</td>
+			</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+		</div>
+	</div>
+{% endblock %}
