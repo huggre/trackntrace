@@ -28,6 +28,7 @@ def GenerateAddressFromBarcode(barcode_ID):
     new_address = Address(result)
     return(new_address.with_valid_checksum())
 
+# Function for publishing new transactions to the tangle
 def send_transaction(seed, addr, msg):
 
     # Create IOTA object
@@ -45,7 +46,7 @@ def send_transaction(seed, addr, msg):
     print("\nTransaction sendt...")
 
 
-
+# Function for retrieving barcode transaction data from the tangle
 def get_transactions(barcode_ID):
 
     # Create IOTA object
@@ -63,8 +64,8 @@ def get_transactions(barcode_ID):
     # Print wait message
     print("Please wait while retrieving transactions from the tangle...")
 
-
-    msg_data = []
+    # Create a list of transactions
+    transactions = []
 
     # Loop trough all transaction hashes
     for txn_hash in myhashes:
@@ -82,10 +83,10 @@ def get_transactions(barcode_ID):
         txn = Transaction.from_tryte_string(trytes)
         
         # Get transaction timestamp
-        timestamp = txn.timestamp
+        # timestamp = txn.timestamp
         
         # Convert timestamp to datetime
-        clean_time = datetime.datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
+        #clean_time = datetime.datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
 
         # Get transaction message as string
         txn_data = str(txn.signature_message_fragment.decode())
@@ -96,8 +97,8 @@ def get_transactions(barcode_ID):
         #print(type(json_data))
        
         # Check if json data has the expected json tag's
-        if all(key in json.dumps(json_data) for key in ["barcode_ID","transaction_type","actor_name"]):
+        if all(key in json.dumps(json_data) for key in ["timestamp","actor_name","transaction_type"]):
             # Append meassage fragment data to dict
-            msg_data.append(json_data)
+            transactions.append(json_data)
 
-    return msg_data
+    return transactions

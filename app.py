@@ -17,9 +17,6 @@ from redis import Redis
 import rq
 queue = rq.Queue('default', connection=Redis.from_url('redis://'))
 
-# Import flask table
-from flask_table import Table, Col
-
 # Import hashlib
 import hashlib
 
@@ -51,11 +48,6 @@ NodeURL = "https://nodes.thetangle.org:443"
 
 # Create IOTA object
 #api=iota.Iota(NodeURL)
-
-# Declare your table
-class ItemTable(Table):
-    name = Col('Name')
-    description = Col('Description')
 
 DEBUG = True
 app = Flask(__name__)
@@ -192,8 +184,11 @@ def register_transaction():
         # Create IOTA address from 13 digit barcode
         addr = GenerateAddressFromBarcode(barcode_ID)
         
+        # Get current time
+        timestamp = strftime("%Y-%m-%dT%H:%M")
+        
         # Create upload json
-        udata = {'barcode_ID' : barcode_ID, 'transaction_type' : transaction_type, 'actor_name' : actor_name}
+        udata = {'timestamp' : timestamp, 'actor_name' : actor_name, 'transaction_type' : transaction_type}
         msg = json.dumps(udata)
         
         # add job to redis que
@@ -203,7 +198,7 @@ def register_transaction():
         job_id = job.get_id()
 
         # Print the redis job ID to terminal
-        print("New redis job added to que" + job_id)
+        print("New redis job added to que: " + job_id)
 
         # Show confirmation that new transaction was published
         flash('New transaction registered to address: ' + str(addr))
@@ -255,22 +250,9 @@ def display_transaction_history():
     return render_template('display_transaction_history.html', title='Display transaction history', form=form)
 
 
-# Get some objects
-class Item(object):
-    def __init__(self, name, description):
-        self.name = name
-        self.description = description
-
 # Display transaction history result
 @app.route('/display_transaction_history_result')
 def display_transaction_history_result(transactions):
-
-    items = [Item('Name1', 'Description1'),
-            Item('Name2', 'Description2'),
-            Item('Name3', 'Description3')]
-
-    # Populate the table
-    #table = ItemTable(items)
 
     #return render_template('display_transaction_history_result.html', title='Transaction history', items=items)
     return render_template('test.html', title='Transaction history', transactions=transactions)
