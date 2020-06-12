@@ -192,13 +192,16 @@ def register_transaction():
         msg = json.dumps(udata)
         
         # add job to redis que
-        job = queue.enqueue('send_transaction', actor_seed, addr, msg)
+        #job = queue.enqueue('send_transaction', actor_seed, addr, msg)
+
+        # Send transaction to the tangle
+        send_transaction(actor_seed, addr, msg)
 
         # Get the redis job ID
-        job_id = job.get_id()
+        #job_id = job.get_id()
 
         # Print the redis job ID to terminal
-        print("New redis job added to que: " + job_id)
+        #print("New redis job added to que: " + job_id)
 
         # Show confirmation that new transaction was published
         flash('New transaction registered to address: ' + str(addr))
