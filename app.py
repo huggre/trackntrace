@@ -175,7 +175,9 @@ def display_transaction_history_result(barcode_ID, transactions):
     # Create Address link
     addr_link = 'https://utils.iota.org/address/%s' % addr
 
-     return render_template('test.html', title='Transaction history', barcode_ID=barcode_ID, addr_link=addr_link, transactions=transactions)
+    print(addr_link)
+
+    return render_template('test.html', title='Transaction history', barcode_ID=barcode_ID, addr_link=addr_link, transactions=transactions)
 
 
 if __name__ == "__main__":
