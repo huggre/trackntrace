@@ -127,7 +127,7 @@ def register_transaction():
         transaction_type = dict(form.transaction_type.choices).get(form.transaction_type.data)
         barcode_ID = form.barcode.data
 
-        # Create IOTA address from 13 digit barcode
+        # Get IOTA address from 13 digit barcode
         addr = GenerateAddressFromBarcode(barcode_ID)
         
         # Get current time
@@ -168,6 +168,12 @@ def display_transaction_history():
 # Display transaction history result
 @app.route('/display_transaction_history_result')
 def display_transaction_history_result(barcode_ID, transactions):
+
+    # Get IOTA address from 13 digit barcode
+    addr = GenerateAddressFromBarcode(barcode_ID)
+
+    # Create Address link
+    addr_link = 'https://utils.iota.org//address/%s' % addr
 
     return render_template('test.html', title='Transaction history', barcode_ID=barcode_ID, transactions=transactions)
 
