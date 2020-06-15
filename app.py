@@ -58,6 +58,11 @@ class DisplayTransactionHistoryForm(FlaskForm):
     barcode = StringField('Barcode', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
+# Form for creating new barcodes
+class CreateBarcodeForm(FlaskForm):
+    barcode = StringField('Barcode', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
 def get_time():
     time = strftime("%Y-%m-%dT%H:%M")
     return time
@@ -68,47 +73,26 @@ def write_to_disk(name, surname, email):
     data.write('DateStamp={}, Name={}, Surname={}, Email={} \n'.format(timestamp, name, surname, email))
     data.close()
 
-@app.route("/", methods=['GET', 'POST'])
+@app.route("/")
 def index():
 
-    form = ReusableForm(request.form)
-
-    #print(form.errors)
-    if request.method == 'POST':
-        name=request.form['name']
-        surname=request.form['surname']
-        email=request.form['email']
-        password=request.form['password']
-
-        if form.validate():
-            write_to_disk(name, surname, email)
-            flash('Hello: {} {}'.format(name, surname))
-
-        else:
-            flash('Error: All Fields are Required')
-
-    return render_template('index.html', form=form)
+    return render_template('index.html')
 
 
-# Create new barcode
-@app.route('/create_new_barcode', methods=['GET', 'POST'])
-def create_new_barcode():
+# Create barcode
+@app.route('/create_barcode', methods=['GET', 'POST'])
+def create_barcode():
 
-    form = TagForm()
+    form = CreateBarcodeForm()
     
-    # Add tag types to SelectField
-    form.tag_type.choices = [(tagtype_row.id, tagtype_row.name) for tagtype_row in tbl_tag_types.query.all()]
-
-    # Add user accounts to SelectField
-    #form.tag_account.choices = [(acc_row.id, acc_row.name) for acc_row in tbl_accounts.query.filter_by(owner=current_user.id)]
-
     if form.validate_on_submit():
-        tag = tbl_tags()
-        retval = save_tag(tag, form, new=True)
-        if retval == True:
-            flash('New tag created sucessfully!!')
-            return redirect(url_for('tags'))
-    return render_template('tag.html', title='New tag', form=form)
+        print("hei")
+        #tag = tbl_tags()
+        #retval = save_tag(tag, form, new=True)
+        #if retval == True:
+        #    flash('New tag created sucessfully!!')
+        #    return redirect(display_barcode.html)
+    return render_template('create_barcode.html', title='Create barcode', form=form)
 
 
 # Register transaction
@@ -145,7 +129,7 @@ def register_transaction():
 
     return render_template('register_transaction.html', title='Register transaction', form=form)
 
-# Display transaction history form
+# Display transaction history input form
 @app.route('/display_transaction_history', methods=['GET', 'POST'])
 def display_transaction_history():
 

@@ -1,11 +1,20 @@
 {% extends "base.html" %}
-{% import 'bootstrap/wtf.html' as wtf %}
 
 {% block app_content %}
-    <h1>{{ title }}</h1>
-    <div class="row">
-        <div class="col-md-4">
-            {{ wtf.quick_form(form) }}
-        </div>
-    </div>
+	<div class="row">
+		<div class="col-md-10">
+		<table style="width:100%">
+			<tr>
+				<td><h1>Welcome to the "Intergrating physical devices with IOTA - The Track&Trace App." tutorial</h1></td>
+			</tr>
+			<tr>
+				<td>
+                    <p>In this tutorial we are creating a simple web App. that simulates using the IOTA tangle as a global DLT to record events in a typical supply chain.</p>
+                    <p>You will find the full tutorial with text and images here</p>
+                </td>
+			</tr>
+
+        </table>
+		</div>
+	</div>
 {% endblock %}
