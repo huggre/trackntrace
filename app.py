@@ -20,14 +20,6 @@ from flask import Flask, redirect, url_for, render_template, flash, request, jso
 from wtforms import Form, SelectField, TextField, TextAreaField, validators, StringField, SubmitField, SelectField, RadioField
 from wtforms.validators import ValidationError, DataRequired
 
-# Imports IotaGo form dependencies
-#from flask_wtf import FlaskForm
-#from wtforms import StringField, FloatField, PasswordField, BooleanField, SubmitField, SelectField, RadioField
-#from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
-
-# Import Flask-WTF
-from flask_wtf import FlaskForm
-
 # Import Flask Bootstrap
 from flask_bootstrap import Bootstrap
 
@@ -37,7 +29,7 @@ app.config.from_object(__name__)
 app.config['SECRET_KEY'] = 'SjdnUends821Jsdlkvxh391ksdODnejdDw'
 
 # Create bootstrap object
-bootstrap = Bootstrap(app)
+# bootstrap = Bootstrap(app)
 
 
 # Form for Register new transaction
