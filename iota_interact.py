@@ -15,6 +15,10 @@ import json
 # Define full node to be used when uploading/downloading transaction records to/from the tangle
 NodeURL = "https://nodes.thetangle.org:443"
 
+# Create IOTA object
+api=iota.Iota(NodeURL)
+
+
 
 # Function for generating IOTA address from a given barcode ID
 def GenerateAddressFromBarcode(barcode_ID):
@@ -29,10 +33,10 @@ def GenerateAddressFromBarcode(barcode_ID):
     return(new_address.with_valid_checksum())
 
 # Function for publishing new transactions to the tangle
-def send_transaction(seed, addr, msg):
+def send_transaction(addr, msg):
 
     # Create IOTA object
-    api=iota.Iota(NodeURL, seed=seed)
+    #api=iota.Iota(NodeURL)
 
     # Define new IOTA transaction
     pt = iota.ProposedTransaction(address = iota.Address(addr), message = iota.TryteString.from_unicode(msg), tag = iota.Tag(b'HOTELIOTA'), value=0)
@@ -50,7 +54,7 @@ def send_transaction(seed, addr, msg):
 def get_transactions(barcode_ID):
 
     # Create IOTA object
-    api=iota.Iota(NodeURL)
+    #api=iota.Iota(NodeURL)
 
     # Generate IOTA address from barcode
     addr = GenerateAddressFromBarcode(barcode_ID)

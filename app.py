@@ -137,7 +137,7 @@ def register_transaction():
         msg = json.dumps(udata)
         
         # Send transaction to the IOTA tangle
-        send_transaction(actor_seed, addr, msg)
+        send_transaction(addr, msg)
 
         # Show confirmation that new transaction was sendt
         flash('New transaction registered to address: ' + str(addr))
