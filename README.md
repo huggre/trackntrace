@@ -11,9 +11,9 @@ In case you do not have access to a Linux system, I suggest you install and run 
 
 ### Getting started
 
-Python 3 and `pip` are required to install and run the App. It is highly recommended to run these examples in a own Python virtual environment.
+Python 3 and `pip` are required to install and run the App.
 
-Before continuing, you also need to make sure you have the following Python libraries installed and working in your server environment.
+You also need to make sure you have the following Python libraries installed and working in your server environment.
 
 - [Flask](https://pypi.org/project/Flask/)
 - [Flask-WTF](https://pypi.org/project/Flask-WTF/)
