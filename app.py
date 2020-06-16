@@ -29,7 +29,7 @@ app.config.from_object(__name__)
 app.config['SECRET_KEY'] = 'SjdnUends821Jsdlkvxh391ksdODnejdDw'
 
 # Create bootstrap object
-# bootstrap = Bootstrap(app)
+bootstrap = Bootstrap(app)
 
 
 # Form for Register new transaction
