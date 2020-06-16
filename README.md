@@ -15,12 +15,12 @@ Python 3 and `pip` are required to run these examples. It is highly recommended 
 
 Before continuing, you also need to make sure you have the following Python libraries installed and working in your server environment.
 
-[Flask](https://pypi.org/project/Flask/)
-[Flask-WTF](https://pypi.org/project/Flask-WTF/)
-[Flask-Bootstrap](https://pypi.org/project/Flask-Bootstrap/)
-[WTForms](https://pypi.org/project/WTForms/)
-[PyOTA](https://pypi.org/project/PyOTA/)
-[PyOTA-CCurl](https://pypi.org/project/PyOTA-CCurl/)
+- [Flask](https://pypi.org/project/Flask/)
+- [Flask-WTF](https://pypi.org/project/Flask-WTF/)
+- [Flask-Bootstrap](https://pypi.org/project/Flask-Bootstrap/)
+- [WTForms](https://pypi.org/project/WTForms/)
+- [PyOTA](https://pypi.org/project/PyOTA/)
+- [PyOTA-CCurl](https://pypi.org/project/PyOTA-CCurl/)
 
 You can now install and run a functional version of the App. using the following procedure:
 
