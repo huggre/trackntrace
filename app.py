@@ -116,7 +116,6 @@ def register_transaction():
         
         # Get values from form
         actor_name = dict(form.actor_name.choices).get(form.actor_name.data)
-        hash_string = 
         actor_key = form.actor_key.data
         transaction_type = dict(form.transaction_type.choices).get(form.transaction_type.data)
         barcode_ID = form.barcode.data
