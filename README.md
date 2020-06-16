@@ -13,12 +13,20 @@ In case you do not have access to a Linux system, I suggest you install and run 
 
 Python 3 and `pip` are required to run these examples. It is highly recommended to run these examples in a own Python virtual environment.
 
-You can install and run a functional version of the App. using the following procedure:
+Before continuing, you also need to make sure you have the following Python libraries installed and working in your server environment.
+
+[Flask](https://pypi.org/project/Flask/)
+[Flask-WTF](https://pypi.org/project/Flask-WTF/)
+[Flask-Bootstrap](https://pypi.org/project/Flask-Bootstrap/)
+[WTForms](https://pypi.org/project/WTForms/)
+[PyOTA](https://pypi.org/project/PyOTA/)
+[PyOTA-CCurl](https://pypi.org/project/PyOTA-CCurl/)
+
+You can now install and run a functional version of the App. using the following procedure:
 
 ```
 git clone https://github.com/huggre/trackntrace
 cd trackntrace
-pip install -r requirements.txt
 python app.py
 ```
 

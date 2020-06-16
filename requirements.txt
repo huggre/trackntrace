@@ -1,6 +1,0 @@
-Flask==1.1.2
-Flask-Bootstrap==3.3.7.1
-Flask-WTF==0.14.3
-PyOTA==2.1.0
-PyOTA-CCurl==1.0.9
-WTForms==2.3.1
