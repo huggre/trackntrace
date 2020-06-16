@@ -6,6 +6,7 @@ from iota_interact import GenerateAddressFromBarcode
 # Import datetime libary
 import time
 import datetime
+from time import strftime
 
 # Import json
 import json
@@ -13,24 +14,22 @@ import json
 # Import hashlib
 import hashlib
 
-from random import randint
-from time import strftime
+# Import misc Flask libraries
+from flask_wtf import FlaskForm
 from flask import Flask, redirect, url_for, render_template, flash, request, jsonify
-from wtforms import Form, SelectField, TextField, TextAreaField, validators, StringField, SubmitField
+from wtforms import Form, SelectField, TextField, TextAreaField, validators, StringField, SubmitField, SelectField, RadioField
+from wtforms.validators import ValidationError, DataRequired
 
 # Imports IotaGo form dependencies
-from flask_wtf import FlaskForm
-from wtforms import StringField, FloatField, PasswordField, BooleanField, SubmitField, SelectField, RadioField
-from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
+#from flask_wtf import FlaskForm
+#from wtforms import StringField, FloatField, PasswordField, BooleanField, SubmitField, SelectField, RadioField
+#from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 
 # Import Flask-WTF
 from flask_wtf import FlaskForm
 
 # Import Flask Bootstrap
 from flask_bootstrap import Bootstrap
-
-# Define full node to be used when uploading/downloading transaction records to/from the tangle
-# NodeURL = "https://nodes.thetangle.org:443"
 
 DEBUG = True
 app = Flask(__name__)
@@ -40,13 +39,6 @@ app.config['SECRET_KEY'] = 'SjdnUends821Jsdlkvxh391ksdODnejdDw'
 # Create bootstrap object
 bootstrap = Bootstrap(app)
 
-class ReusableForm(FlaskForm):
-    #actor_name = SelectField('Actor Name', choices=[('Hotel IOTA', 'Hotel IOTA'), ('Ben the Fisherman', 'Ben the Fisherman')])
-    dropdown_list = ['Air', 'Land', 'Sea'] # You can get this from your model
-    actor_name = SelectField('Actor Name', choices=dropdown_list, default=1)
-    name = TextField('Name:', validators=[validators.required()])
-    surname = TextField('Surname:', validators=[validators.required()])
-    submit = SubmitField('Submit')
 
 # Form for Register new transaction
 class RegisterTransactionForm(FlaskForm):
@@ -56,25 +48,12 @@ class RegisterTransactionForm(FlaskForm):
     barcode = StringField('Barcode', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
+
 # Form for displaying transaction history
 class DisplayTransactionHistoryForm(FlaskForm):
     barcode = StringField('Barcode', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
-# Form for creating new barcodes
-class CreateBarcodeForm(FlaskForm):
-    barcode = StringField('Barcode', validators=[DataRequired()])
-    submit = SubmitField('Submit')
-
-def get_time():
-    time = strftime("%Y-%m-%dT%H:%M")
-    return time
-
-def write_to_disk(name, surname, email):
-    data = open('file.log', 'a')
-    timestamp = get_time()
-    data.write('DateStamp={}, Name={}, Surname={}, Email={} \n'.format(timestamp, name, surname, email))
-    data.close()
 
 # Function for hashing a string
 def encrypt_string(hash_string):
@@ -82,26 +61,11 @@ def encrypt_string(hash_string):
         hashlib.sha256(hash_string.encode()).hexdigest()
     return sha_signature
 
+
 @app.route("/")
 def index():
 
     return render_template('index.html')
-
-
-# Create barcode
-@app.route('/create_barcode', methods=['GET', 'POST'])
-def create_barcode():
-
-    form = CreateBarcodeForm()
-    
-    if form.validate_on_submit():
-        print("hei")
-        #tag = tbl_tags()
-        #retval = save_tag(tag, form, new=True)
-        #if retval == True:
-        #    flash('New tag created sucessfully!!')
-        #    return redirect(display_barcode.html)
-    return render_template('create_barcode.html', title='Create barcode', form=form)
 
 
 # Register transaction
@@ -174,9 +138,7 @@ def display_transaction_history_result(barcode_ID, transactions):
     # Create Address link
     addr_link = 'https://utils.iota.org/address/%s' % addr
 
-    print(addr_link)
-
-    return render_template('test.html', title='Transaction history', barcode_ID=barcode_ID, addr_link=addr_link, transactions=transactions)
+    return render_template('display_transaction_history_result.html', title='Transaction history', barcode_ID=barcode_ID, addr_link=addr_link, transactions=transactions)
 
 
 if __name__ == "__main__":

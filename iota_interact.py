@@ -19,7 +19,6 @@ NodeURL = "https://nodes.thetangle.org:443"
 api=iota.Iota(NodeURL)
 
 
-
 # Function for generating IOTA address from a given barcode ID
 def GenerateAddressFromBarcode(barcode_ID):
     barcode_tryte = TryteString.from_unicode(barcode_ID)
@@ -35,9 +34,6 @@ def GenerateAddressFromBarcode(barcode_ID):
 # Function for publishing new transactions to the tangle
 def send_transaction(addr, msg):
 
-    # Create IOTA object
-    #api=iota.Iota(NodeURL)
-
     # Define new IOTA transaction
     pt = iota.ProposedTransaction(address = iota.Address(addr), message = iota.TryteString.from_unicode(msg), tag = iota.Tag(b'HOTELIOTA'), value=0)
 
@@ -52,9 +48,6 @@ def send_transaction(addr, msg):
 
 # Function for retrieving barcode transaction data from the tangle
 def get_transactions(barcode_ID):
-
-    # Create IOTA object
-    #api=iota.Iota(NodeURL)
 
     # Generate IOTA address from barcode
     addr = GenerateAddressFromBarcode(barcode_ID)
@@ -86,12 +79,6 @@ def get_transactions(barcode_ID):
         # Get transaction object
         txn = Transaction.from_tryte_string(trytes)
         
-        # Get transaction timestamp
-        # timestamp = txn.timestamp
-        
-        # Convert timestamp to datetime
-        #clean_time = datetime.datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
-
         # Get transaction message as string
         txn_data = str(txn.signature_message_fragment.decode())
        
