@@ -1,5 +1,7 @@
 # Welcome to the "Integrating physical devices with IOTA - The Track&Trace App." tutorial.
 
+![img](https://cdn-images-1.medium.com/max/800/1*ob_L-GxKYFsv8QERX95pTA.jpeg)
+
 In this tutorial we are creating a simple web App. that simulates using the IOTA tangle as a global DLT to record events in a typical supply chain.
 
 You will find the full tutorial with text and images here
