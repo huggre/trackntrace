@@ -10,6 +10,9 @@ import datetime
 # Import json
 import json
 
+# Import hashlib
+import hashlib
+
 from random import randint
 from time import strftime
 from flask import Flask, redirect, url_for, render_template, flash, request, jsonify
@@ -48,7 +51,7 @@ class ReusableForm(FlaskForm):
 # Form for Register new transaction
 class RegisterTransactionForm(FlaskForm):
     actor_name = SelectField('Actor Name', coerce=str)
-    actor_seed = StringField('Actor Seed', validators=[DataRequired()])
+    actor_key = StringField('Actor key', validators=[DataRequired()])
     transaction_type = RadioField('Transaction Type', choices=[('1','Inbound'),('2','Outbound')], default=1, coerce=str)
     barcode = StringField('Barcode', validators=[DataRequired()])
     submit = SubmitField('Submit')
@@ -72,6 +75,12 @@ def write_to_disk(name, surname, email):
     timestamp = get_time()
     data.write('DateStamp={}, Name={}, Surname={}, Email={} \n'.format(timestamp, name, surname, email))
     data.close()
+
+# Function for hashing a string
+def encrypt_string(hash_string):
+    sha_signature = \
+        hashlib.sha256(hash_string.encode()).hexdigest()
+    return sha_signature
 
 @app.route("/")
 def index():
@@ -107,9 +116,16 @@ def register_transaction():
         
         # Get values from form
         actor_name = dict(form.actor_name.choices).get(form.actor_name.data)
-        actor_seed = form.actor_seed.data
+        hash_string = 
+        actor_key = form.actor_key.data
         transaction_type = dict(form.transaction_type.choices).get(form.transaction_type.data)
         barcode_ID = form.barcode.data
+
+        # Create string to be hashed
+        hash_string = barcode_ID + actor_key + transaction_type
+
+        # Create a sha256 signature from the hash_string
+        signature = encrypt_string(hash_string)
 
         # Get IOTA address from 13 digit barcode
         addr = GenerateAddressFromBarcode(barcode_ID)
@@ -118,7 +134,7 @@ def register_transaction():
         timestamp = strftime("%Y-%m-%dT%H:%M")
         
         # Create upload json
-        udata = {'timestamp' : timestamp, 'actor_name' : actor_name, 'transaction_type' : transaction_type}
+        udata = {'timestamp' : timestamp, 'actor_name' : actor_name, 'transaction_type' : transaction_type, 'signature' : signature}
         msg = json.dumps(udata)
         
         # Send transaction to the IOTA tangle

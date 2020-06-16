@@ -97,7 +97,7 @@ def get_transactions(barcode_ID):
         #print(type(json_data))
        
         # Check if json data has the expected json tag's
-        if all(key in json.dumps(json_data) for key in ["timestamp","actor_name","transaction_type"]):
+        if all(key in json.dumps(json_data) for key in ["timestamp","actor_name","transaction_type","signature"]):
             # Append meassage fragment data to dict
             transactions.append(json_data)
 

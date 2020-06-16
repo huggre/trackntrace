@@ -15,8 +15,9 @@
 			<thead>
 			<tr>
 				<th class="col-md-1">Timestamp</th>
-				<th class="col-md-2">Actor Name</th>
-				<th class="col-md-1">Transaction Type</th>
+				<th class="col-md-1">Actor Name</th>
+                <th class="col-md-1">Transaction Type</th>
+                <th class="col-md-2">Signature</th>               
             </tr>
 			</thead>
 			<tbody>
@@ -25,6 +26,7 @@
 				<td>{{ transaction.timestamp }}</td>
 				<td>{{ transaction.actor_name }}</td>
 				<td>{{ transaction.transaction_type }}</td>
+				<td>{{ transaction.signature }}</td>
             </tr>
 			{% endfor %}
 			</tbody>
