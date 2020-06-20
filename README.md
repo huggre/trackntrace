@@ -4,7 +4,7 @@
 
 In this tutorial we are creating a simple web App. that simulates using the IOTA tangle as a global DLT to record events in a typical supply chain.
 
-You will find the full tutorial with text and images here
+You will find the full tutorial with text and images [here](https://medium.com/@hugogregersen/integrating-physical-devices-with-iota-the-track-trace-app-351226b86c8b)
 
 Warning!!
 The Track&Trace App. is a server-side web App. built on top of the [Flask web framework](https://flask.palletsprojects.com/en/1.1.x/), and should be run inside a Linux environment (the code will not run correctly inside a native Windows environment)
